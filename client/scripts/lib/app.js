@@ -12,7 +12,9 @@ import 'ionic-scripts';
 import Definer from '../definer';
 import ChatsCtrl from '../controllers/chats.controller';
 import ChatCtrl from '../controllers/chat.controller';
+import ConfirmationCtrl from '../controllers/confirmation.controller';
 import LoginCtrl from '../controllers/login.controller';
+import ProfileCtrl from '../controllers/profile.controller';
 import InputDirective from '../directives/input.directive';
 import CalendarFilter from '../filters/calendar.filter';
 import { RoutesConfig, RoutesRunner } from '../routes';
@@ -28,7 +30,9 @@ const App = angular.module('WhatsApp', [
 new Definer(App)
 	.define(ChatsCtrl)
 	.define(ChatCtrl)
+	.define(ConfirmationCtrl)
 	.define(LoginCtrl)
+	.define(ProfileCtrl)
 	.define(InputDirective)
 	.define(CalendarFilter)
   .define(RoutesConfig)
