@@ -3,6 +3,8 @@ import { Controller } from '../entities';
 export default class NewChatCtrl extends Controller {
   constructor() {
     super(...arguments);
+
+    this.subscribe('users');
  
     this.helpers({
       users() {
