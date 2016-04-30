@@ -20,6 +20,18 @@ export default class ChatCtrl extends Controller {
     this.autoScroll();
   }
 
+  sendPicture() {
+    MeteorCameraUI.getPicture({}, (err, data) => {
+      if (err) return this.handleError(err);
+ 
+      this.callMethod('newMessage', {
+        picture: data,
+        type: 'picture',
+        chatId: this.chatId
+      });
+    });
+  }
+
   sendMessage() {
   	if (_.isEmpty(this.message)) return;
  
@@ -67,5 +79,16 @@ export default class ChatCtrl extends Controller {
     });
   }
 }
+
+	handleError(err) {
+    if (err.error == 'cancel') return;
+    this.$log.error('Profile save error ', err);
  
-ChatCtrl.$inject = ['$scope', '$stateParams', '$timeout', '$ionicScrollDelegate'];
+    this.$ionicPopup.alert({
+      title: err.reason || 'Save failed',
+      template: 'Please try again',
+      okType: 'button-positive button-clear'
+    });
+  }
+ 
+ChatCtrl.$inject = ['$scope', '$stateParams', '$timeout', '$ionicScrollDelegate', '$ionicPopup', '$log'];
