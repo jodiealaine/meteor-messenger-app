@@ -1,12 +1,21 @@
-import { Config } from './entities';
+import { Config, Runner } from './entities';
  
-export default class RoutesConfig extends Config {
+export class RoutesConfig extends Config {
+   constructor() {
+    super(...arguments);
+ 
+    this.isAuthorized = ['$auth', this.isAuthorized.bind(this)];
+  }
+ 
   configure() {
     this.$stateProvider
       .state('tab', {
         url: '/tab',
         abstract: true,
-        templateUrl: 'client/templates/tabs.html'
+        templateUrl: 'client/templates/tabs.html',
+        resolve: {
+          user: this.isAuthorized
+        }
       })
       .state('tab.chats', {
         url: '/chats',
@@ -39,11 +48,31 @@ export default class RoutesConfig extends Config {
       .state('profile', {
         url: '/profile',
         templateUrl: 'client/templates/profile.html',
-        controller: 'ProfileCtrl as profile'
+        controller: 'ProfileCtrl as profile',
+        resolve: {
+          user: this.isAuthorized
+        }
       });
  
     this.$urlRouterProvider.otherwise('tab/chats');
   }
+
+  isAuthorized($auth) {
+    return $auth.awaitUser();
+  }
+}
+
+export class RoutesRunner extends Runner {
+  run() {
+    this.$rootScope.$on('$stateChangeError', (...args) => {
+      const err = _.last(args);
+ 
+      if (err === 'AUTH_REQUIRED') {
+        this.$state.go('login');
+      }
+    });
+  }
 }
  
 RoutesConfig.$inject = ['$stateProvider', '$urlRouterProvider'];
+RoutesRunner.$inject = ['$rootScope', '$state'];
